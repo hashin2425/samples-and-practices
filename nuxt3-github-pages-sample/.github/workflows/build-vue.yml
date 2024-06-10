@@ -1,0 +1,48 @@
+name: Build and Commit Vue.js Project
+
+on:
+  push:
+    branches:
+      - release
+
+env:
+  ENV_BUILD: production
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install nuxt
+        run: npm install -g nuxt
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run generate
+
+      - name: Move build to docs
+        run: |
+          rm -rf ./docs/
+          mkdir ./docs
+          mv ./dist/* ./docs/
+
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add -A
+          git commit -m "Add dist directory [skip ci]"
+          git push
