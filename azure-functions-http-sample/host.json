@@ -1,0 +1,26 @@
+{
+  "version": "2.0",
+  "extensions": {
+    "http": {
+      "routePrefix": ""
+    }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    },
+    "fileLoggingMode": "always",
+    "logLevel": {
+      "default": "Error",
+      "Host.Results": "Error",
+      "Function": "Error",
+      "Host.Aggregator": "Error",
+      "Function.applii-cafe-receiver": "Error",
+      "Function.applii-cafe-receiver.User": "Error"
+    }
+  },
+  "functionTimeout": "00:05:00"
+}
