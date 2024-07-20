@@ -1,0 +1,43 @@
+<html>
+  <head>
+    <title>React Introduction</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+
+  <body>
+    <div id="root1"></div>
+    <div id="root2"></div>
+
+    <script type="text/babel">
+        class CheckList extends React.Component {
+            constructor(props) {
+            super(props);
+            this.state = { checked: false };
+            this.handleChange = this.handleChange.bind(this);
+            }
+
+            handleChange() {
+            this.setState({ checked: !this.state.checked });
+            }
+
+            render() {
+            const msg = this.state.checked ? 'Checked' : 'Unchecked';
+            return <div>
+                <input type="checkbox" onChange={this.handleChange} />
+                {this.props.item} {msg}
+            </div>;
+            }
+        }
+
+      const root1Element = document.getElementById('root1');
+      const dom = <div>
+        <CheckList item="Apple" />
+        <CheckList item="Banana" />
+        <CheckList item="Cherry" />
+      </div>;
+      ReactDOM.render(dom, root1Element);
+    </script>
+  </body>
+</html>

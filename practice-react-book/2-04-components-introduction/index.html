@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>React Introduction</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+
+  <body>
+    <div id="root1"></div>
+    <div id="root2"></div>
+
+    <script type="text/babel">
+      const root1Element = document.getElementById('root1');
+
+      function ShowColor(props) {
+        // コンポーネントは大文字で始めないと認識されないので注意
+        return (
+          <div style={{color: props.colorCode}}>
+            The color {props.colorName} is {props.colorCode}
+          </div>
+        );
+      }
+
+      class ShowTwoTimes extends React.Component {
+        // もっと複雑なコンポーネントを作りたいなら、これを使うらしい。フィールドとかメソッドを持てることがメリット？
+        getTwoTimes(num)
+        {
+          return num * 2;
+        }
+        render() {
+          const props = this.props;
+          return (
+            <h3>{this.getTwoTimes(props.num)} is twice {props.num}.</h3>
+          );
+        }
+      };
+
+      class UsefulList extends React.Component {
+        render() {
+          const props = this.props;
+          const items = props.items.split(', ');
+          const listItems = items.map((item, index) => {
+            return <li key={index}>{item}</li>;
+          });
+          return (
+            <div>
+              <h2>{props.title}</h2>
+              <ul>{listItems}</ul>
+            </div>
+          );
+        }
+      }
+
+      const dom = (
+        <div>
+          <ShowColor colorName='red' colorCode='#FF0000'/>
+          <ShowColor colorName='green' colorCode='#00FF00'/>
+          <ShowColor colorName='blue' colorCode='#0000FF'/>
+          <ShowTwoTimes num={10}/>
+          <ShowTwoTimes num={20}/>
+          <UsefulList title="favorite fruits" items="apple, banana, cherry"/>
+        </div>
+      );
+
+      ReactDOM.render(dom, root1Element);
+    </script>
+  </body>
+</html>

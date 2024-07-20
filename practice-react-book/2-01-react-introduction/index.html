@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <title>React Introduction</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <style>
+      .date-box {
+      background-color: lightblue;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root1"></div>
+    <div id="root2"></div>
+
+    <script type="text/babel">
+      const root1Element = document.getElementById('root1');
+      const elementContent1 =(
+      <div>
+      <h1>Hello, world!</h1>
+      </div>
+      );
+      ReactDOM.render(elementContent1, root1Element);
+
+      const root2Element = document.getElementById('root2');
+      const dateBox = 'date-box';
+      const styleDict = {color: 'red', fontSize: '30px'};
+      const elementContent2 = <div class={dateBox} style={styleDict}>Now Datetime is {new Date().toLocaleString()}</div>;
+      ReactDOM.render(elementContent2, root2Element);
+
+      setInterval(updateDateTime, 1000);
+      function updateDateTime() {
+      const elementContent2 = <div className={dateBox} style={styleDict}>Now Datetime is {new Date().toLocaleString()}</div>;
+      ReactDOM.render(elementContent2, root2Element);
+      }
+    </script>
+  </body>
+</html>
