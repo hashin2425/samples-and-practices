@@ -40,3 +40,16 @@ message = <<"EOS"
 　　こんにちは
 EOS
 puts message
+
+# 文字列は、+演算子や*演算子でPythonと同じように結合や繰り返しができる
+puts "Hello" + "World"
+puts "Hello" * 3
+
+# Python同様、上記のコードでは新しい文字列インスタンスが生成されるが、そうしたくない場合は、<<演算子を使う
+# ただし、この場合は、元の文字列が変更されるので注意
+greeting = "Hello"
+greeting << "World"
+
+#もしくは
+greeging = "greeging".concat("World")
+puts greeting
