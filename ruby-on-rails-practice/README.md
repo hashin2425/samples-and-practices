@@ -4,9 +4,13 @@
 
 ## 1. Ruby 自体の構文になれる
 
+`1-ruby-first-contact`
+
 <https://www.javadrive.jp/ruby/> このサイトを見ながら手を動かしてみる
 
 ## 2. Ruby を使って、数字当てゲームを作ってみる
+
+`2-number-game`
 
 ## 3. Ruby on rails の基礎をさわる
 
