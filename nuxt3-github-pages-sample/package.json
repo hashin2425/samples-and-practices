@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "nuxt": "^3.11.2",
+    "nuxt": "^3.12.4",
     "vue": "^3.3.12",
     "vue-router": "^4.2.5"
   },
