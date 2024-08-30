@@ -13,5 +13,9 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   get "hello" => "hello#index" # /hello
+
   get "users" => "users#index" # /users
+
+  get "account/:name" => "account#index" # /account/:name
+  get "account" => "account#annonimus" # /account
 end

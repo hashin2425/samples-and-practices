@@ -1,0 +1,9 @@
+<div>
+    <h1>Account</h1>
+    <p>Welcome, "<%= @name %>".</p>
+    <% if @user %>
+        <p> Your age is <%= @age %>. </p>
+    <% else %>
+        <p> Missing Your Name </p>
+    <% end %>
+</div>
