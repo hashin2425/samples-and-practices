@@ -1,0 +1,8 @@
+<%= stylesheet_link_tag "users" %>
+<%= javascript_include_tag "users" %>
+
+<div>
+    <h1>Users page</h1>
+    <p><%=@message%></p>
+    <p>Your name: <% if @user_name %> <%=@user_name%> <% end %></p>
+</div>
