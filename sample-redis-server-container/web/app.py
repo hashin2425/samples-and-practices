@@ -1,6 +1,8 @@
 import os
 import logging
 import datetime
+import psutil
+
 
 import flask
 import redis
@@ -25,6 +27,16 @@ logger.setLevel(logging.INFO)
 # --- functions --- #
 def get_now_jst() -> datetime.datetime:
     return datetime.datetime.now() + datetime.timedelta(hours=9)
+
+
+def get_machine_status() -> dict:
+    return {
+        "cpu_percent": psutil.cpu_percent(interval=1),
+        "memory_percent": psutil.virtual_memory().percent,
+        "disk_percent": psutil.disk_usage("/").percent,
+        "memory_available_gb": round(psutil.virtual_memory().available / (1024**3), 2),
+        "disk_available_gb": round(psutil.disk_usage("/").free / (1024**3), 2),
+    }
 
 
 # --- routes --- #
@@ -58,20 +70,29 @@ def route_health_check():
         return "Failed to connect to Redis server"
 
 
+@app.route("/machine-check/")
+def route_machine_check():
+    return flask.jsonify(get_machine_status())
+
+
 @app.route("/set/<db>/<key>/")
 def route_set(key, db):
-    redis_connections[db].select(db)
     redis_connections[db].set(key, "value")
     return flask.jsonify({"message": f"Set {key}"})
 
 
 @app.route("/get/<db>/<key>/")
 def route_get(key, db):
-    redis_connections[db].select(db)
     value = redis_connections[db].get(key)
     if value:
         return flask.jsonify({key: value.decode("utf-8")})
     return flask.jsonify({"message": "Key not found"}), 404
+
+
+@app.route("/delete/<db>/<key>/")
+def route_delete(key, db):
+    redis_connections[db].delete(key)
+    return flask.jsonify({"message": f"Deleted {key}"})
 
 
 # --- main --- #
