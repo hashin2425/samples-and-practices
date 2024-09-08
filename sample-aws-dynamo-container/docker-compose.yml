@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  dynamodb:
+    container_name: project-dynamodb
+    image: amazon/dynamodb-local:latest
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docker/dynamodb/:/data
+    networks:
+      - dynamodb-network
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-dbPath", "/data"]
+
+  dynamodb-admin:
+    container_name: project-dynamodb-admin
+    image: aaronshaf/dynamodb-admin:latest
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamodb:8000
+    ports:
+      - 8001:8001
+    depends_on:
+      - dynamodb
+    networks:
+      - dynamodb-network
+
+  dynamodb-init:
+    container_name: project-dynamodb-init
+    image: amazon/aws-cli:latest
+    volumes:
+      - ./dynamodb-init.sh:/dynamodb-init.sh
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        sleep 10
+        chmod +x /dynamodb-init.sh
+        /dynamodb-init.sh
+    environment:
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - AWS_DEFAULT_REGION=us-east-1
+    depends_on:
+      - dynamodb
+    networks:
+      - dynamodb-network
+
+networks:
+  dynamodb-network:
+    driver: bridge
