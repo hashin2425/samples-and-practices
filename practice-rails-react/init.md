@@ -31,7 +31,7 @@ rails shakapacker:install
 npm install react react-dom @babel/preset-react prop-types css-loader style-loader mini-css-extract-plugin css-minimizer-webpack-plugin
 ```
 
-Edit package.json
+### Edit package.json
 
 ```diff
 "babel": {
@@ -44,6 +44,9 @@ Edit package.json
 ```
 
 ```sh
+bundle add 'react-rails' --strict
+rails generate react:install
+
 rails g react:component HelloWorld greeting:string
 rails g react:component my_subdirectory/HelloWorld greeting:string
 ```
@@ -54,3 +57,97 @@ rails g react:component my_subdirectory/HelloWorld greeting:string
 npm install typescript @babel/preset-typescript
 npm install fork-ts-checker-webpack-plugin
 ```
+
+### Add `tsconfig.json` file
+
+```json
+{
+    "compilerOptions": {
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "module": "es6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "target": "es5",
+        "jsx": "react",
+        "noEmit": true
+    },
+    "exclude": [
+        "**/*.spec.ts",
+        "node_modules",
+        "vendor",
+        "public"
+    ],
+    "compileOnSave": false
+}
+```
+
+### Edit `config/application.rb`
+
+```rb
+module TestApp
+  class Application < Rails::Application
+    # add this line
+    config.react.server_renderer_extensions = ["jsx", "js", "tsx", "ts"]
+  end
+end
+
+```
+
+### Edit `config/shakapacker.yml`
+
+```yml
+default: &default
+  # add this
+  extensions:
+    - .js
+    - .jsx
+    - .ts
+    - .tsx
+    - .css
+    - .scss
+    - .sass
+    - .less
+
+```
+
+### Edit `config/webpack/webpack.config.js`
+
+```js
+const { generateWebpackConfig, merge } = require('shakapacker')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+
+const webpackConfig = generateWebpackConfig()
+
+module.exports = merge(
+  webpackConfig, {
+    plugins: [new ForkTsCheckerWebpackPlugin()]
+  }
+);
+```
+
+## Add page
+
+```sh
+rails generate controller Welcome index
+```
+
+### Add `route.rb`
+
+```rb
+get "/" => "welcome#index"
+```
+
+### Edit `app/view/welcome/index.html.erb`
+
+```html
+# add this
+<%= react_component("HelloWorld", { greeting: "Hello from react-rails.", info: { name: "react-rails" } }, { class: "hello-world" }) %>
+```
+
+you can change js to tsx: app\javascript\components\HelloWorld.tsx
