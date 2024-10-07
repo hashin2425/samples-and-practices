@@ -1,8 +1,8 @@
-# project init commands
+# Project init commands
 
 <https://github.com/reactjs/react-rails/blob/master/docs/get-started.md>
 
-## version checks
+## Version checks
 
 ```sh
 ruby -v
@@ -13,13 +13,13 @@ node -v
 # v20.12.0
 ```
 
-## init rails
+## Initialize Rails
 
 ```sh
 rails new test-app --skip-javascript
 ```
 
-## install react
+## Install React
 
 ```sh
 cd test-app
@@ -31,7 +31,7 @@ rails shakapacker:install
 npm install react react-dom @babel/preset-react prop-types css-loader style-loader mini-css-extract-plugin css-minimizer-webpack-plugin
 ```
 
-### Edit package.json
+### Edit `package.json`
 
 ```diff
 "babel": {
@@ -51,7 +51,7 @@ rails g react:component HelloWorld greeting:string
 rails g react:component my_subdirectory/HelloWorld greeting:string
 ```
 
-## init typescript
+## Install TypeScript
 
 ```sh
 npm install typescript @babel/preset-typescript
@@ -150,4 +150,4 @@ get "/" => "welcome#index"
 <%= react_component("HelloWorld", { greeting: "Hello from react-rails.", info: { name: "react-rails" } }, { class: "hello-world" }) %>
 ```
 
-you can change js to tsx: app\javascript\components\HelloWorld.tsx
+You can change js to tsx: app\javascript\components\HelloWorld.tsx
