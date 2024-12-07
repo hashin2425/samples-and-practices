@@ -233,9 +233,7 @@ shopping-app/
 ## プロジェクト作成時のコマンド
 
 ```sh
-mkdir src
-cd src
-rails new . --database=mysql --skip-test --webpack=react --skip-coffee --skip-turbolinks --template-engine=slim
+rails new src --database=mysql --skip-action-mailbox --skip-action-text --skip-spring --skip-listen --skip-system-test --javascript=webpack --css=tailwind --template-engine=slim --skip-bundle
 ```
 
 ## その他
