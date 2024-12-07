@@ -20,8 +20,11 @@
 - MySQL
 - Redis
 - Grafana
+- Nginx
 
-ミドルウェア（MySQL, Redis, Grafana）も Rails アプリもすべて docker-compose によって起動する。ローカル上のコードを docker コンテナにマウントし、Rails アプリのコードを変更した際にその変更が即座に反映される機能（ホットリロード）が有効になっていなければならない。
+Rails と React の連携は`react-rails`という Gem を用いること。また、Rails のフロントエンドは Slim テンプレート言語を用いること。
+
+ミドルウェア（MySQL, Redis, Grafana）も Rails アプリもすべて docker-compose によって起動する。ローカル上のコードを docker コンテナーにマウントし、Rails アプリのコードを変更した際にその変更が即座に反映される機能（ホットリロード）が有効になっていなければならない。
 
 ## データベース構造
 
@@ -55,9 +58,9 @@
   - これはすべてのユーザーが利用可能である。
 - /show-item/{item_id}
   - 商品の詳細情報を閲覧できるページである。
-  - MySQLから取得される商品の情報が表示される。
+  - MySQL から取得される商品の情報が表示される。
   - ユーザーは商品を「カートに入れる」ことができる
-  - Redisに保存されている「カートに入れているユーザー数」も表示される
+  - Redis に保存されている「カートに入れているユーザー数」も表示される
   - すべてのユーザーが閲覧可能であるが、カートに追加することはログイン済みユーザーが使える機能である。
 - /login/
   - 作成済みのアカウントにログインするためのページである。
@@ -73,13 +76,171 @@
 
 - ログ取得
   - ログは標準出力に表示され、また、Json ファイルでローカル上に保存される必要がある。
-- CSRF対策やXSS対策を必要に応じて導入する
-- セッション管理はJWTベースで行う
-- 
+- CSRF 対策や XSS 対策を必要に応じて導入する
+- セッション管理は JWT ベースで行う
+
+## ディレクトリ構造
+
+```md
+shopping-app/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   ├── feature_request.md
+│   │   └── custom.md
+│   ├── pull_request_template.md
+│   └── workflows/
+│       ├── ci.yml
+│       ├── deploy.yml
+│       └── dependency-updates.yml
+├── .gitignore
+├── .env-sample
+├── .rubocop.yml
+├── .eslintrc.js
+├── .stylelintrc.js
+├── docker-compose.yml
+├── Makefile
+├── README.md
+├── docker/
+│   ├── app/
+│   │   ├── Dockerfile
+│   │   └── entrypoint.sh
+│   ├── mysql/
+│   │   ├── Dockerfile
+│   │   ├── my.cnf
+│   │   └── init.sql
+│   ├── nginx/
+│   │   ├── Dockerfile
+│   │   └── default.conf
+│   ├── redis/
+│   │   ├── Dockerfile
+│   │   └── redis.conf
+│   └── grafana/
+│       ├── Dockerfile
+│       └── provisioning/
+│           ├── dashboards/
+│           │   └── dashboard.yml
+│           └── datasources/
+│               └── datasource.yml
+└── src/
+    ├── Gemfile
+    ├── Gemfile.lock
+    ├── Rakefile
+    ├── package.json
+    ├── yarn.lock
+    ├── .browserslistrc
+    ├── babel.config.js
+    ├── postcss.config.js
+    ├── app/
+    │   ├── assets/
+    │   │   ├── images/
+    │   │   └── stylesheets/
+    │   │       ├── application.tailwind.css
+    │   │       └── components/
+    │   ├── controllers/
+    │   │   ├── api/
+    │   │   │   └── v1/
+    │   │   │       ├── auth_controller.rb
+    │   │   │       ├── items_controller.rb
+    │   │   │       └── cart_controller.rb
+    │   │   └── web/
+    │   │       ├── home_controller.rb
+    │   │       ├── sessions_controller.rb
+    │   │       └── users_controller.rb
+    │   ├── javascript/
+    │   │   ├── components/
+    │   │   │   ├── common/
+    │   │   │   ├── items/
+    │   │   │   ├── cart/
+    │   │   │   └── auth/
+    │   │   ├── pages/
+    │   │   ├── services/
+    │   │   │   ├── api/
+    │   │   │   └── auth/
+    │   │   ├── hooks/
+    │   │   ├── contexts/
+    │   │   ├── types/
+    │   │   └── utils/
+    │   ├── models/
+    │   │   ├── concerns/
+    │   │   │   ├── tokenizable.rb
+    │   │   │   └── searchable.rb
+    │   │   ├── validators/
+    │   │   ├── item.rb
+    │   │   └── user.rb
+    │   ├── services/
+    │   │   ├── cart/
+    │   │   │   ├── add_item_service.rb
+    │   │   │   └── remove_item_service.rb
+    │   │   └── auth/
+    │   │       ├── jwt_service.rb
+    │   │       └── password_service.rb
+    │   ├── views/
+    │   │   ├── layouts/
+    │   │   │   └── application.html.slim
+    │   │   └── pages/
+    │   │       ├── home/
+    │   │       ├── items/
+    │   │       └── users/
+    │   └── helpers/
+    ├── config/
+    │   ├── environments/
+    │   │   ├── development.rb
+    │   │   ├── production.rb
+    │   │   └── test.rb
+    │   ├── initializers/
+    │   │   ├── cors.rb
+    │   │   ├── redis.rb
+    │   │   └── session_store.rb
+    │   ├── locales/
+    │   │   ├── en.yml
+    │   │   └── ja.yml
+    │   ├── database.yml
+    │   ├── routes.rb
+    │   ├── application.rb
+    │   └── credentials.yml.enc
+    ├── db/
+    │   ├── migrate/
+    │   │   ├── 20240101000000_create_users.rb
+    │   │   └── 20240101000001_create_items.rb
+    │   ├── schema.rb
+    │   └── seeds/
+    │       ├── development/
+    │       └── production/
+    ├── lib/
+    │   ├── tasks/
+    │   │   └── custom_tasks.rake
+    │   └── utils/
+    │       └── logger.rb
+    ├── log/
+    ├── public/
+    ├── spec/
+    │   ├── factories/
+    │   ├── models/
+    │   ├── requests/
+    │   │   ├── api/
+    │   │   └── web/
+    │   ├── system/
+    │   ├── support/
+    │   │   ├── capybara.rb
+    │   │   └── factory_bot.rb
+    │   └── rails_helper.rb
+    ├── storage/
+    ├── tmp/
+    └── vendor/
+```
+
+## プロジェクト作成時のコマンド
+
+```sh
+mkdir src
+cd src
+rails new . --database=mysql --skip-test --webpack=react --skip-coffee --skip-turbolinks --template-engine=slim
+```
 
 ## その他
 
-- コードの生成や実装時にはベストプラクティスに従って作成を行うこと。
+- コードの生成や実装時にはベストプラクティスにしたがって作成を行うこと。
 - コードの生成時にはディレクトリ構成を必ず示してからコードを生成せよ。
 - 必要な環境変数をリストアップし、それを`.env`ファイルや`.env-sample`ファイルなどに記述せよ。
 - 必要に応じてテストコードを導入せよ
