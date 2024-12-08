@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - ./src:/app
+      - bundle_data:/usr/local/bundle
+    environment:
+      - RAILS_ENV=development
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    command: /usr/bin/entrypoint.sh
+    networks:
+      - shopping_network
+
+  db:
+    build:
+      context: .
+      dockerfile: docker/mysql/Dockerfile
+    volumes:
+      - mysql_data:/var/lib/mysql
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    networks:
+      - shopping_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    build:
+      context: .
+      dockerfile: docker/redis/Dockerfile
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - shopping_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  shopping_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  bundle_data:
+  grafana_data:
+  prometheus_data:

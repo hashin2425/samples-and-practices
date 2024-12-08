@@ -52,3 +52,9 @@ group :development do
   gem "web-console"
 end
 
+gem 'slim-rails'
+gem 'react-rails'
+gem 'jwt'
+gem 'redis'
+gem 'rack-cors'
+gem 'prometheus-client'
