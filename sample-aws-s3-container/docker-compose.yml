@@ -1,0 +1,32 @@
+version: "3.7"
+services:
+  minio:
+    container_name: s3-viewer
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=adminPass123
+    image: quay.io/minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio_data:/data
+    restart: unless-stopped
+
+  mc:
+    image: minio/mc
+    container_name: s3-mc
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: "admin"
+      MINIO_ROOT_PASSWORD: "adminPass123"
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 admin adminPass123;
+      mc mb myminio/sample-bucket-123;
+      mc cp init_data/* myminio/sample-bucket-123;
+      "
+    volumes:
+      - ./init_data:/init_data
