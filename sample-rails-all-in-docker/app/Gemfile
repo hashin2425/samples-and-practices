@@ -59,3 +59,6 @@ end
 gem "shakapacker", "= 8.1"
 
 gem "react-rails", "= 3.2"
+
+gem 'slim-rails'
+gem "html2slim", github: "slim-template/html2slim"

@@ -151,3 +151,24 @@ get "/" => "welcome#index"
 ```
 
 You can change js to tsx: app\javascript\components\HelloWorld.tsx
+
+## enable .slim
+
+```Gemfile
+gem 'slim-rails'
+gem "html2slim", github: "slim-template/html2slim"
+```
+
+```sh
+bundle exec erb2slim app/views app/views -d # 既存の.html.erbを.slimに変換させる
+```
+
+`config/application.rb`
+
+```rb
+module App
+  class Application < Rails::Application
+    config.generators.template_engine = :slim
+  end
+end
+```
