@@ -1,8 +1,10 @@
 import { Container, Typography, Box, Button, Stack } from '@mui/material';
+import ExampleApiUsage from '@/components/ExampleApiUsage';
 
 export default function Home() {
   return (
     <Container maxWidth="lg">
+      <ExampleApiUsage />
       <Box sx={{ py: 8 }}>
         <Stack spacing={4} alignItems="center">
           <Typography variant="h2" component="h1" align="center">
