@@ -40,4 +40,9 @@ $ npx create-next-app@latest your-project-name --typescript --tailwind --eslint
     run `npm fund` for details
 
     found 0 vulnerabilities
+
+$ npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-import
+$ npm install --save-dev prettier eslint-config-prettier eslint-plugin-prettier
+$ npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+
 ```
